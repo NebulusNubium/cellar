@@ -45,9 +45,16 @@ class Bottles
     #[ORM\JoinColumn(nullable: false)]
     private ?Countries $countries = null;
 
+    /**
+     * @var Collection<int, Cellars>
+     */
+    #[ORM\ManyToMany(targetEntity: Cellars::class, mappedBy: 'wines')]
+    private Collection $cellars;
+
     public function __construct()
     {
         $this->cellar = new ArrayCollection();
+        $this->cellars = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -108,10 +115,9 @@ class Bottles
         return $this->publishedAt;
     }
 
-    public function setPublishedAt(\DateTimeImmutable $publishedAt): static
+    public function setPublishedAt(\DateTimeImmutable $publishedAt): self
     {
-        $this->publishedAt = $publishedAt;
-
+        $this->publishedAt = \DateTimeImmutable::createFromInterface($publishedAt);
         return $this;
     }
 
@@ -161,5 +167,13 @@ class Bottles
         $this->countries = $countries;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Cellars>
+     */
+    public function getCellars(): Collection
+    {
+        return $this->cellars;
     }
 }

@@ -2,17 +2,19 @@
 
 namespace App\Controller;
 
+use App\Repository\CellarsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class AllCellarsController extends AbstractController
 {
-    #[Route('/all/cellars', name: 'app_all_cellars')]
-    public function index(): Response
+    #[Route('/AllCellars', name: 'allCellars')]
+    public function index(CellarsRepository $CR): Response
     {
-        return $this->render('all_cellars/index.html.twig', [
-            'controller_name' => 'AllCellarsController',
+        $cellars = $CR->findAll();
+        return $this->render('allCellars/allCellars.html.twig', [
+            'cellars'=>$cellars,
         ]);
     }
 }

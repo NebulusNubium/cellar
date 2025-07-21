@@ -2,17 +2,54 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Cellars;
+use App\Form\CellarCreateType;
+use App\Repository\BottlesRepository;
+use App\Repository\CellarsRepository;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class MyCaveController extends AbstractController
 {
-    #[Route('/my/cave', name: 'app_my_cave')]
-    public function index(): Response
+    #[Route('/myCellar', name: 'myCellar')]
+    public function index(CellarsRepository $CR, Request $request, EntityManagerInterface $entityManager, BottlesRepository $BR): Response
     {
-        return $this->render('my_cave/index.html.twig', [
-            'controller_name' => 'MyCaveController',
+        $user = $this->getUser();
+        $cellars= $CR->findAll();
+        $cellar = new Cellars();
+        $wines= [];
+        if (!$user) {
+            throw $this->createAccessDeniedException('You have to log in to view this page.');
+        };
+        // Récupère la cave de l'utilisateur
+        if($CR->findOneBy(['user' => $user])){
+        $cellar = $CR->findOneBy(['user' => $user]);
+        $wines = $BR->findByUserCaves($this->getUser());
+        }
+        $formCreate = $this->createForm(CellarCreateType::class, $cellar);
+        $formCreate->handleRequest($request);
+            if ($formCreate->isSubmitted() && $formCreate->isValid()) {
+            $user= $this->getUser();
+            // on le lie à l'image avant le persist()
+            $cellar->setUser($user);
+            $cellar->setPublishedAt(new DateTimeImmutable());
+            $entityManager->persist($cellar);
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'Image enregistrée !');
+            return $this->redirectToRoute('myCellar');}
+
+        
+        
+        return $this->render('myCellar/myCellar.html.twig', [
+            'cellar' => $cellar,
+            'addCellar'=> $formCreate->createView(),
+            'wines'=>$wines,
+            'cellars'=>$cellars,
         ]);
     }
 }

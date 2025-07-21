@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MyCellarsController!{% endblock %}
+
+{% block body %}
+<main id="myCellar">
+    {# <h1>Cellars de {{ Cellars.User.Username }}</h1> #}
+    <a href="{{ path('allCellars') }}" class="btn">Visit other cellars</a>
+    
+    {% if cellars == null %}
+        <p>You do not own a cellar yet.</p>
+        {{ form_start(addCellar, {'attr': {'class': 'register-form'}}) }}
+        <div class="form-group">
+            {{ form_label(addCellar.name) }}
+            {{ form_widget(addCellar.name, {'attr': {'class': 'input'}}) }}
+        </div>
+        <button class="submit-button">Add</button>
+        {{ form_end(addCellar) }}
+
+    {% elseif cellar.wines %}
+        <h2>Welcome to your cellar</h2>
+        <h1>{{cellar.name}}</h1>
+        <p>You do not have bottles in your cellar.</p>
+        <a href="">Add a bottle</a>
+        
+    {% else %}
+    <p>hello</p>
+        <div class="bouteille-list">
+            {% for wine in cellar.wines %}
+                <article class="bottle">
+                    <img src="{{ asset('uploads/images/' ~ wine.imageName) }}" alt="Image de {{ wine.name }}">
+                    <h2>{{ wine.name }}</h2>
+                    <p>Year : {{ wine.year }}</p>
+                    <p>Grapes : 
+                        {% for grape in wine.grapes %}
+                            {{ grape.name }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                    <p>Region and Country : {{ wine.regions.name }}, {{ wine.countries.name }}</p>
+                </article>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+</main>
+{% endblock %}

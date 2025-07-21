@@ -31,9 +31,16 @@ class Cellars
     #[ORM\ManyToMany(targetEntity: Bottles::class, mappedBy: 'cellar')]
     private Collection $cellar;
 
+    /**
+     * @var Collection<int, Bottles>
+     */
+    #[ORM\ManyToMany(targetEntity: Bottles::class, inversedBy: 'cellars')]
+    private Collection $wines;
+
     public function __construct()
     {
         $this->cellar = new ArrayCollection();
+        $this->wines = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,10 +77,9 @@ class Cellars
         return $this->publishedAt;
     }
 
-    public function setPublishedAt(\DateTimeImmutable $publishedAt): static
+    public function setPublishedAt(\DateTimeImmutable $publishedAt): self
     {
-        $this->publishedAt = $publishedAt;
-
+        $this->publishedAt = \DateTimeImmutable::createFromInterface($publishedAt);
         return $this;
     }
 
@@ -100,6 +106,30 @@ class Cellars
         if ($this->cellar->removeElement($cellar)) {
             $cellar->removeCellar($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Bottles>
+     */
+    public function getWines(): Collection
+    {
+        return $this->wines;
+    }
+
+    public function addWine(Bottles $wine): static
+    {
+        if (!$this->wines->contains($wine)) {
+            $this->wines->add($wine);
+        }
+
+        return $this;
+    }
+
+    public function removeWine(Bottles $wine): static
+    {
+        $this->wines->removeElement($wine);
 
         return $this;
     }

@@ -14,6 +14,49 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <nav>
+        <div class="logoTop">
+            <a href=""><img src="{{ asset('images/logo.png') }}" alt="logo site"></a>
+        </div>
+
+        <ul class="nav-list" id="nav-list">
+            {% if not is_granted('ROLE_USER') %}
+                <li><a href="{{ path('app_login') }}">Log In</a></li>
+                <li><a href="{{path('register') }}">Register</a></li>
+            {% else %}
+                <li><a href="{{ path('app_logout') }}">Log Out</a></li>
+            {% endif %}
+            
+            <li><a href="{{ path('home') }}">Home</a></li>
+            <li><a href="{{ path('myCellar') }}">My cellar</a></li>
+            <li><a href="{{ path('allCellars') }}">All Cellars</a></li>
+            <li><a href="{{ path('wine') }}">All the Wine</a></li>
+            <li><a href="{{ path('about') }}">About</a></li>
+
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('admin') }}">Admin</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% block body %}{% endblock %}
+
+    <footer>
+        <div class="b_logo">
+            <img src="{{ asset('images/logo.png') }}" alt="logo site">
+        </div>
+        <ul>
+            <li><a href="#">Legal Mentions</a></li>
+            <li><a href="#">Confidentiality Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+        </ul>
+        <ul>
+            <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+            <li><a href="#"><i class="fa-brands fa-x-twitter"></i></a></li>
+        </ul>
+        <ul>
+            <li><p>© 2025 My Cave. All rights applied.</p></li>
+        </ul>
+    </footer>
     </body>
 </html>
