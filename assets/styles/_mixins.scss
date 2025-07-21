@@ -1,0 +1,117 @@
+@use 'variables' as v;
+
+/// "bouton" link effect using your design tokens
+/// @param $bg            Background color (light sand)
+/// @param $text-color    Link text color
+/// @param $hover-text    Link text color on hover
+/// @param $font-family   Font family
+/// @param $font-size     Font size
+/// @param $padding       Padding
+/// @param $radius        Border-radius
+/// @param $grad-start    Gradient start (transparent)
+/// @param $grad-mid      Gradient mid (semi‐opaque sand)
+/// @param $grad-end      Gradient end (solid sand)
+@mixin bouton(
+  $bg:            v.$colorSecondary,
+  $text-color:    v.$black,
+  $hover-text:    v.$colorPrimary,
+  $font-family:   "Playfair Display",
+  $font-size:     1.5rem,
+  $padding:       0.5rem 1rem,
+  $radius:        4px,
+  $grad-start:    rgba(v.$colorSecondary, 0),
+  $grad-mid:      rgba(v.$colorPrimary, 0.6),
+  $grad-end:      v.$colorPrimary
+) {
+  font-family:      $font-family;
+  font-size:        $font-size;
+  position:         relative;
+  display:          inline-block;
+  padding:          $padding;
+  background:       $bg;
+  color:            $text-color;
+  text-decoration:  none;
+  border-radius:    $radius;
+  overflow:         hidden;
+  transition:       color 0.3s ease;
+
+  &::before {
+    content: "";
+    position:       absolute;
+    inset:          0;
+    background:     linear-gradient(
+                      to bottom,
+                      $grad-start 10%,
+                      $grad-mid   80%,
+                      $grad-end   99%
+                    );
+    transform:      translateY(-100%);
+    transition:     transform 0.6s ease-out;
+    pointer-events: none;
+    filter:         contrast(1.2) brightness(1.1);
+  }
+
+  &:hover {
+    color:         $hover-text;
+  }
+  &:hover::before {
+    transform:     translateY(0);
+  }
+}
+
+
+@mixin card () {
+        background-color: rgba(v.$colorPrimary, 0.6);
+        background-position: center;
+        object-fit: cover;
+        color: v.$grey;
+        border-radius: 12px;
+        padding: 1rem;
+        width: 280px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        box-sizing: border-box;
+    
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+    
+        p {
+            font-size: 0.9rem;
+            margin: 0.3rem 0;
+        }
+    
+        .image {
+            width: 90%;
+            margin: auto;
+            img {
+                width: 100%;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+        }
+    
+        .actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            .modifier, .supprimer{
+              padding: 0.5rem;
+              border-radius: 10px;
+              border: 1px solid v.$colorPrimary;
+              font-size: 1rem;
+            }
+            .modifier {
+                background: v.$colorSecondary;
+                color: white;
+                text-decoration: none;
+            }
+    
+            .supprimer {
+                background: v.$colorPrimary;
+                color: white;
+                text-decoration: none;
+            }
+        }
+    }

@@ -1,0 +1,97 @@
+@use 'variables' as v;
+
+nav{
+    background-color: v.$grey;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    gap: 10%;
+    
+    .nav-list {
+        display: flex;
+        gap: 20px;
+        padding-left: 0;
+        ul{
+
+        }
+        li{
+            background-image: url('../../public/images/bgBtn.png');
+            background-position: center;
+            background-size: cover;
+            padding: 1rem;
+        }
+    }
+
+    .nav-list li a {
+        text-decoration: none;
+        color: #fff;
+        padding: 1.5rem 4rem 1.5rem 1.5rem;
+        margin: 0;
+    }
+
+    
+    .logoTop{
+       margin-top: 2rem;
+    }
+    ul{
+        display: flex;
+        align-items: center;
+        a{
+            color: white;
+            margin: 0 2rem;
+            font-size: 1.5rem;
+            transition: transform 0.2s ease-in-out;
+            display: inline-block;
+            &:hover{
+                transform: scale(1.2);
+            }
+        }
+        .active{
+            color: v.$thirdcolor;
+        }
+    }
+}
+#banner{
+    background: linear-gradient(
+    to bottom,
+    v.$grey 0%,
+    v.$grey 0%,  
+    #000000 100%);
+
+    p{margin: 0; text-align: center;}
+}
+footer{
+    background-color: v.$grey;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    div{
+        padding-top: 1rem;
+    }
+    ul{
+        padding-top: 1rem;
+        li{
+            margin: 0.5rem;
+            a{
+                color: white;
+            }
+            p{
+                color: white;
+            }
+        }
+    }
+
+
+}
+
+
+#login, #register{
+    background-image: url(/public/images/bgInscription.jpg);
+    background-position: center;
+    background-size: cover;
+    color: white;
+    h1{
+        font-size: 4rem;
+        color: v.$grey;
+    }
+}

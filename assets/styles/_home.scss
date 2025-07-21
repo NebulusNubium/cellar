@@ -1,0 +1,67 @@
+@use 'variables' as v;
+@use "mixins" as m;
+
+//accueil
+main{
+    background-image: url(/public/images/accueil.jpg);
+    background-position: center;
+    background-size: cover;
+    height: 120vh;
+    .home-container{
+        text-align: center;
+        padding: 5% 2rem;
+        h2{
+            font-family: "Bold";
+            text-transform: uppercase;
+            color: white;
+            margin: 0;
+        }
+        h1{
+            font-family: "Bold";
+            font-size: 3rem;
+            color: v.$primary-color;
+            text-transform: uppercase;
+            padding: 0;
+        }
+        p{
+            font-family: "Regular";
+            color: white;
+            width: 60%;
+            margin: auto;
+            padding: 8% 0 2% 0;
+        }
+        .latest{
+            display: flex;
+            article{
+                background-color: v.$primary-colorOp;
+                padding: 2rem;
+                margin: 2rem;
+                height: 200px;
+                border-radius: 10px;
+            }
+            
+        }
+        
+    }
+}
+@media (max-width: 1344px) {
+    main{
+        height: auto;
+        .home-container{
+            position: relative;
+            margin-top: 0;
+            margin-bottom: 0;
+            justify-content: center;
+            display: flex;
+            flex-wrap: wrap;
+            .latest{
+                flex-direction: column;
+                justify-content: center;
+                height: auto;
+                
+            }
+        }
+    }
+    
+    
+}
