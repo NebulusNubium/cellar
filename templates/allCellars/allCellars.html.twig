@@ -13,8 +13,8 @@
             {% for cellar in cellars %}
                 <article class="user-cave">
                     <h2> {{ cellar.user.username }}'s Cellar</h2>
-                    <p> {{ cellar.wine|length }} different bottles in this collection.</p>
-                    <a href="{{ path('view_cave', { 'id': cellar.id }) }}" class="btn">Visit this Cellar</a>
+                    <p> {{ cellar.Wines|length }} different bottles in this collection.</p>
+                    <a href="{{ path('cellar', { 'cellar': cellar.id }) }}" class="btn">Visit this Cellar</a>
                 </article>
             {% endfor %}
         </div>

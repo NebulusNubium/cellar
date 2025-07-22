@@ -52,4 +52,45 @@ final class MyCaveController extends AbstractController
             'cellars'=>$cellars,
         ]);
     }
+    #[Route('/cellar/{cellar}', name: 'cellar')]
+        public function userCellar(
+            CellarsRepository  $CR,
+            BottlesRepository  $BR,
+            Request            $request,
+            EntityManagerInterface $em
+        ): Response {
+        /** @var \App\Entity\User $user */
+        $user   = $this->getUser();
+        // 1) Pull the single cellar that belongs to this user (or null):
+        $cellar = $CR->findOneBy(['user' => $user]);
+
+        // 2) If they have a cellar, fetch its wines; otherwise empty array
+        $wines  = $cellar
+            ? $BR->findByUserCaves($user)
+            : [];
+
+        // 3) Build your “create cellar” form on either a new or existing cellar:
+        if (! $cellar) {
+            $cellar = new Cellars();
+        }
+        $form = $this->createForm(CellarCreateType::class, $cellar)
+                    ->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $cellar->setUser($user)
+                ->setPublishedAt(new \DateTimeImmutable());
+            $em->persist($cellar);
+            $em->flush();
+
+            $this->addFlash('success','Cellar saved!');
+            return $this->redirectToRoute('cellar');
+        }
+
+        return $this->render('myCellar/userCellar.html.twig', [
+            'cellar'   => $cellar,           // single entity or new one
+            'wines'    => $wines,            // array of bottles
+            'cellarForm' => $form->createView(),
+        ]);
+    }
+
 }

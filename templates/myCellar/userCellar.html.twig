@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CellarController!{% endblock %}
+
+{% block body %}
+<main id="myCellar">
+    {# <h1>Cellars de {{ Cellars.User.Username }}</h1> #}
+    <a href="{{ path('allCellars') }}" class="btn">Visit other cellars</a>
+
+    {% if wines is empty %}
+  <h2>Welcome to {{ cellar.user.username }}’s cellar</h2>
+  <p>There are no bottles in this cellar!</p>
+
+    {% else %}
+    <h2>Welcome to {{ cellar.user.username }}’s cellar</h2>
+    <h1>{{ cellar.name }}</h1>
+    <div class="bouteille-list">
+        {% for wine in wines %}
+        <article class="bottle">
+            <img src="{{ asset('uploads/images/' ~ wine.imageName) }}"
+                alt="{{ wine.name }}">
+            <h2>{{ wine.name }}</h2>
+            <p>Year: {{ wine.year }}</p>
+            {# etc… #}
+        </article>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+</main>
+{% endblock %}
