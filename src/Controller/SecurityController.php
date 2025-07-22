@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use DateTimeImmutable;
+use App\Entity\Cellars;
 use App\Form\registrationForm;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,22 +20,37 @@ class SecurityController extends AbstractController
     public function index(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordEncoder): Response
     {
         $user = new User();
-        dump($user);
-        $form = $this->createForm(registrationForm::class, $user);
+        $form = $this->createForm(RegistrationForm::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-        $user->setRoles(['ROLE_USER']);
-        $user->setPassword(
-        $passwordEncoder->hashPassword($user,$form->get('password')->getData())
-        );
-        $entityManager->persist($user);
-        $entityManager->flush();
+            // 1) hash & save the User
+            $user->setPassword(
+                $passwordEncoder->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-        return $this->redirectToRoute('home');
+            // 2) now create their cellar
+            $cellarName = $form->get('cellarName')->getData();
+            $cellar = new Cellars();
+            $cellar
+                ->setName($cellarName)
+                ->setUser($user)
+                ->setPublishedAt(new \DateTimeImmutable())
+            ;
+            $entityManager->persist($cellar);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Welcome! Your cellar has been created.');
+            return $this->redirectToRoute('home');
         }
+
         return $this->render('security/register.html.twig', [
-            'registrationForm'=>$form,
+            'registrationForm' => $form->createView(),
         ]);
     }
 

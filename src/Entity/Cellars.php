@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use App\Entity\Bottles;
 use App\Repository\CellarsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -28,18 +28,12 @@ class Cellars
     /**
      * @var Collection<int, Bottles>
      */
-    #[ORM\ManyToMany(targetEntity: Bottles::class, mappedBy: 'cellar')]
-    private Collection $cellar;
-
-    /**
-     * @var Collection<int, Bottles>
-     */
-    #[ORM\ManyToMany(targetEntity: Bottles::class, inversedBy: 'cellars')]
+    #[ORM\ManyToMany(targetEntity: Bottles::class, inversedBy: 'cellar')]
+    #[ORM\JoinTable(name: 'cellar_bottles')]
     private Collection $wines;
 
     public function __construct()
     {
-        $this->cellar = new ArrayCollection();
         $this->wines = new ArrayCollection();
     }
 
@@ -80,33 +74,6 @@ class Cellars
     public function setPublishedAt(\DateTimeImmutable $publishedAt): self
     {
         $this->publishedAt = \DateTimeImmutable::createFromInterface($publishedAt);
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Bottles>
-     */
-    public function getCellar(): Collection
-    {
-        return $this->cellar;
-    }
-
-    public function addCellar(Bottles $cellar): static
-    {
-        if (!$this->cellar->contains($cellar)) {
-            $this->cellar->add($cellar);
-            $cellar->addCellar($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCellar(Bottles $cellar): static
-    {
-        if ($this->cellar->removeElement($cellar)) {
-            $cellar->removeCellar($this);
-        }
-
         return $this;
     }
 

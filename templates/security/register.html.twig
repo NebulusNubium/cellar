@@ -16,7 +16,11 @@
         {{ form_label(registrationForm.password) }}
         {{ form_widget(registrationForm.password, {'attr': {'class': 'input'}}) }}
     </div>
-    <button class="submit">S’inscrire</button>
+    <div class="form-group">
+      {{ form_label(registrationForm.cellarName) }}
+        {{ form_widget(registrationForm.cellarName, {'attr': {'class': 'input'}}) }}
+    </div>
+    <button class="submit">Register</button>
   {{ form_end(registrationForm) }}
 
   <p>Vous avez déjà un compte ? <a href="{{ path('app_login') }}">Connectez-vous</a>.</p>

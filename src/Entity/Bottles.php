@@ -2,12 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\BottlesRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTimeImmutable;
+use App\Entity\Cellars;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\BottlesRepository;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\ArrayCollection;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: BottlesRepository::class)]
 class Bottles
 {
@@ -34,7 +40,7 @@ class Bottles
     /**
      * @var Collection<int, Cellars>
      */
-    #[ORM\ManyToMany(targetEntity: Cellars::class, inversedBy: 'cellar')]
+    #[ORM\ManyToMany(targetEntity: Cellars::class, inversedBy: 'wines')]
     private Collection $cellar;
 
     #[ORM\ManyToOne(inversedBy: 'bottle')]
@@ -51,10 +57,29 @@ class Bottles
     #[ORM\ManyToMany(targetEntity: Cellars::class, mappedBy: 'wines')]
     private Collection $cellars;
 
+    #[Vich\UploadableField(mapping: 'images', fileNameProperty: 'imageName')]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageName = null;
+
+/**
+ * @param File|null $imageFile
+ */
+public function setImageFile(?File $imageFile = null): void
+{
+    $this->imageFile = $imageFile;
+}
+
+public function getImageFile(): ?File
+{
+    return $this->imageFile;
+}
+
+
     public function __construct()
     {
         $this->cellar = new ArrayCollection();
-        $this->cellars = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -175,5 +200,17 @@ class Bottles
     public function getCellars(): Collection
     {
         return $this->cellars;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageName(?string $imageName): static
+    {
+        $this->imageName = $imageName;
+
+        return $this;
     }
 }

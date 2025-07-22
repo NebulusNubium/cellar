@@ -2,11 +2,15 @@
 
 namespace App\Controller;
 
+use App\Form\WineType;
+use DateTimeImmutable;
+use App\Entity\Bottles;
 use App\Entity\Cellars;
+use App\Entity\Regions;
+use App\Entity\Countries;
 use App\Form\CellarCreateType;
 use App\Repository\BottlesRepository;
 use App\Repository\CellarsRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,78 +22,109 @@ final class MyCaveController extends AbstractController
     #[Route('/myCellar', name: 'myCellar')]
     public function index(CellarsRepository $CR, Request $request, EntityManagerInterface $entityManager, BottlesRepository $BR): Response
     {
-        $user = $this->getUser();
-        $cellars= $CR->findAll();
-        $cellar = new Cellars();
-        $wines= [];
-        if (!$user) {
+        if ($this->getUser() == null) {
             throw $this->createAccessDeniedException('You have to log in to view this page.');
         };
+        $user = $this->getUser();
+        $cellar = [];
+        $wines = [];
+        
         // Récupère la cave de l'utilisateur
         if($CR->findOneBy(['user' => $user])){
         $cellar = $CR->findOneBy(['user' => $user]);
         $wines = $BR->findByUserCaves($this->getUser());
         }
-        $formCreate = $this->createForm(CellarCreateType::class, $cellar);
-        $formCreate->handleRequest($request);
-            if ($formCreate->isSubmitted() && $formCreate->isValid()) {
-            $user= $this->getUser();
-            // on le lie à l'image avant le persist()
-            $cellar->setUser($user);
-            $cellar->setPublishedAt(new DateTimeImmutable());
-            $entityManager->persist($cellar);
-            $entityManager->flush();
-            
-            $this->addFlash('success', 'Image enregistrée !');
-            return $this->redirectToRoute('myCellar');}
+            //ajout de bouteille
+        $bottle = new Bottles();
+        $formBottle = $this->createForm(WineType::class, $bottle)
+                    ->handleRequest($request);
+        if ($formBottle->isSubmitted() && $formBottle->isValid()) {
+        $name= $formBottle->get('name')->getData();
+        $year= $formBottle->get('year')->getData();
+        $regions= $formBottle->get('regions')->getData();
+        $countries = $formBottle->get('countries')->getData();
+        $description= $formBottle->get('description')->getData();
+        // Region existe? Sinon on la crée
+        $regionRepo = $entityManager->getRepository(Regions::class);
+        $region = $regionRepo->findOneBy(['name' => $regions])
+            ?? (new Regions())->setName($regions);
 
-        
-        
+        // Pareil pour le pays
+        $countryRepo = $entityManager->getRepository(Countries::class);
+        $country = $countryRepo->findOneBy(['name' => $countries])
+            ?? (new Countries())->setName($countries);
+
+        $entityManager->persist($region);
+        $entityManager->persist($country);
+        //pareil pour le vin:
+        $bottleRepo = $entityManager->getRepository(Bottles::class);
+        $bottle= $bottleRepo->findOneBy([
+        'name'      => $name,
+        'year'      => $year,
+        'countries' => $country,
+    ]);
+        // données du vin
+        if (! $bottle) {
+        // 5) build a new Bottles only if none existed
+        $bottle = new Bottles();
+        $bottle
+            ->setName($name)
+            ->setYear($year)
+            ->setGrapes($formBottle->get('grapes')->getData())
+            ->setRegions($region)
+            ->setCountries($country)
+            ->setDescription($description)
+            ->setPublishedAt(new \DateTimeImmutable())
+        ;
+        $entityManager->persist($bottle);
+        $bottle->addCellar($cellar);
+        $cellar->addWine($bottle)
+            ->setPublishedAt(new \DateTimeImmutable());
+        $entityManager->persist($cellar);
+        $entityManager->flush();
+        }else{
+            $this->addFlash('Error','Bottle already exists!');
+            return $this->redirectToRoute('myCellar');
+        }
+        // $entityManager->flush();
+        // $cellar->addWine($bottle)
+        //     ->setPublishedAt(new \DateTimeImmutable());
+        // $entityManager->persist($cellar);
+        // $entityManager->flush();
+
+            $this->addFlash('success','Cellar saved!');
+            return $this->redirectToRoute('myCellar');
+        }
         return $this->render('myCellar/myCellar.html.twig', [
             'cellar' => $cellar,
-            'addCellar'=> $formCreate->createView(),
             'wines'=>$wines,
-            'cellars'=>$cellars,
+            'wineForm'=>$formBottle,
         ]);
     }
-    #[Route('/cellar/{cellar}', name: 'cellar')]
+
+
+
+
+    #[Route('/cellar/{cellar}', name: 'cellar',  methods: ['GET'])]
         public function userCellar(
             CellarsRepository  $CR,
             BottlesRepository  $BR,
             Request            $request,
-            EntityManagerInterface $em
+            EntityManagerInterface $em,
+            ?Cellars $cellar =null,
         ): Response {
-        /** @var \App\Entity\User $user */
-        $user   = $this->getUser();
-        // 1) Pull the single cellar that belongs to this user (or null):
-        $cellar = $CR->findOneBy(['user' => $user]);
+        if (null === $cellar) {
+        throw $this->createNotFoundException('Cellar not found.');
+            }
 
-        // 2) If they have a cellar, fetch its wines; otherwise empty array
+        // on fetch les vins, sinon c'est vide
         $wines  = $cellar
-            ? $BR->findByUserCaves($user)
+            ? $BR->findByCellar($cellar)
             : [];
 
-        // 3) Build your “create cellar” form on either a new or existing cellar:
-        if (! $cellar) {
-            $cellar = new Cellars();
-        }
-        $form = $this->createForm(CellarCreateType::class, $cellar)
-                    ->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $cellar->setUser($user)
-                ->setPublishedAt(new \DateTimeImmutable());
-            $em->persist($cellar);
-            $em->flush();
-
-            $this->addFlash('success','Cellar saved!');
-            return $this->redirectToRoute('cellar');
-        }
-
         return $this->render('myCellar/userCellar.html.twig', [
-            'cellar'   => $cellar,           // single entity or new one
-            'wines'    => $wines,            // array of bottles
-            'cellarForm' => $form->createView(),
+            'cellar'   => $cellar,
+            'wines'    => $wines,
         ]);
     }
 
