@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Controller;
-
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Form\WineType;
 use App\Entity\Bottles;
-use App\Entity\Cellars;
 use App\Form\WineFilterType;
 use App\Repository\BottlesRepository;
 use App\Repository\CellarsRepository;
+use App\Repository\CountriesRepository;
+use App\Repository\RegionsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,7 +40,7 @@ final class WineController extends AbstractController
 
     #[Route('/api/wines', name:'api_wines', methods:['GET'])]
 public function search(BottlesRepository $repo, Request $req): JsonResponse
-{
+    {
     $term  = $req->query->get('search','');
     $wines = $repo->findByTerm($term);
 
@@ -53,5 +55,26 @@ public function search(BottlesRepository $repo, Request $req): JsonResponse
     ], $wines);
 
     return $this->json($data);
-}
+    }
+
+
+    #[Route('/wine/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function edit(CountriesRepository $CR, RegionsRepository $RR, Bottles $wine, Request $request, EntityManagerInterface $entityManager, BottlesRepository $BR): Response
+    {
+        $formBottle = $this->createForm(WineType::class, $wine)
+                    ->handleRequest($request);
+        if ($formBottle->isSubmitted() && $formBottle->isValid()) {
+        $entityManager->persist($wine);
+        $entityManager->flush();
+        return $this->redirectToRoute('wine'); 
+        }
+        $wines = $BR->findAll();
+        $this->addFlash('success','Wine updated!');
+        return $this->render('wine/edit.html.twig', [
+            'wine'=>$wine,
+            'wineForm'=>$formBottle,
+            'wines'=>$wines,
+        ]);
+    }
 }

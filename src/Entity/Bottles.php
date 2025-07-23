@@ -63,6 +63,12 @@ class Bottles
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageName = null;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'bottle')]
+    private Collection $users;
+
 /**
  * @param File|null $imageFile
  */
@@ -80,6 +86,7 @@ public function getImageFile(): ?File
     public function __construct()
     {
         $this->cellar = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -210,6 +217,33 @@ public function getImageFile(): ?File
     public function setImageName(?string $imageName): static
     {
         $this->imageName = $imageName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addBottle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeBottle($this);
+        }
 
         return $this;
     }

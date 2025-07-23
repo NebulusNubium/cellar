@@ -6,44 +6,40 @@
 <main id="wines">
     <h1>All of our Bottles</h1>
             <div class="filter-form">
-            {# {{ form_start(form) }}
-                    {{ form_row(form.Name) }}
-                    {{ form_row(form.year) }}
-                    {{ form_row(form.regions) }}
-                    {{ form_row(form.countries) }}
-                    {{ form_row(form.grape) }}
-                <button class="btn btn-primary" type="submit">Filtrer</button>
-            {{ form_end(form) }} #}
-            <div class="wine-filter">
-                <label for="wine-search">Search wines:</label>
-                <input type="text" id="wine-search" placeholder="Type a specific grape, name, region, etc...">
-                <ul id="search-results" class="search-results"></ul>
+                <div class="wine-filter">
+                    <label for="wine-search">Search wines:</label>
+                    <input type="text" id="wine-search" placeholder="Type a specific grape, name, region, etc...">
+                    <ul id="search-results" class="search-results"></ul>
+                </div>
             </div>
-        </div>
 
     <section id="liste">
         <div class="cards">
         {% for wine in wines %}
-            <div class="card">
+            <div class="card" data-id="{{ wine.id }}">
                 
-                <h2>{{ wine.name }}</h2>
-                <p>{{ wine.year }}</p>
-                <p>{{ wine.grapes }}</p>
-                <p>{{ wine.regions.name }}</p>
-                <p>{{ wine.countries.name }}</p>
+                <h2 class="view-name">{{ wine.name }}</h2>
+                <p class="view-year">{{ wine.year }}</p>
+                <p class="view-grapes">{{ wine.grapes }}</p>
+                <p class="view-region">{{ wine.regions.name }}</p>
+                <p class="view-country">{{ wine.countries.name }}</p>
                 
-                <!-- Description courte -->
+                {# <!-- Description courte -->
                 <p id="bouteille-description-{{ wine.id }}">
                     {{ wine.description|slice(0, 100) }}... 
                     <button onclick="toggleDescription({{ wine.id }})">Expand</button>
-                </p>
+                </p> #}
 
                 <!-- Description complète -->
-                <p id="bouteille-description-full-{{ wine.id }}" style="display:none;">
+                <p class="view-description" id="bouteille-description-full-{{ wine.id }}" style="display:none;">
                     {{ wine.description }}
                     <button onclick="toggleDescription({{ wine.id }})">Reduce</button>
                 </p>
                 <div class="actions">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <p><a href="" class="plus">+</a> Number  <a href="" class="minus">-</a> </p>
+                    <a href="{{ path('edit', { id: wine.id }) }}" class="btn modifier">Edit</a>
+                {% endif %} 
                 </div>         
             </div>
             

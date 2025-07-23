@@ -1,24 +1,15 @@
-// assets/js/search.js
-
 document.addEventListener('DOMContentLoaded', () => {
-  /**
-   * Generic live‐search binder.
-   *
-   * @param {string} inputSelector     – CSS selector for the text input
-   * @param {string} endpoint          – API endpoint (no ?search=… part)
-   * @param {string} containerSelector – CSS selector for the cards container
-   * @param {function} renderItem      – (item) => HTML string for one result
-   */
+  //barre de recherche vin & cave
   function liveSearch({ inputSelector, endpoint, containerSelector, renderItem }) {
     const input   = document.querySelector(inputSelector);
     const container = document.querySelector(containerSelector);
-    if (!input || !container) return; // only bind if both exist on the page
+    if (!input || !container) return; // ne marche que s'il y a un input ou un container
 
-    // cache the initial HTML so we can restore on empty query
+    // stockage de la page originale
     const originalHTML = container.innerHTML;
     let timer;
 
-    // debounce helper
+    // fonction d'attente avant d'activer l'autre fonction
     function debounce(fn, delay = 300) {
       clearTimeout(timer);
       timer = setTimeout(fn, delay);
@@ -29,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       debounce(async () => {
         if (query === '') {
-          // restore original cards when the search box is cleared
+          // remet la page originale si la recherche ne donne rien
           container.innerHTML = originalHTML;
           return;
         }
@@ -49,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Instantiate for wines
+  // recherche vin
   liveSearch({
     inputSelector:     '#wine-search',
     endpoint:          '/api/wines',
@@ -73,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `
   });
 
-  // Instantiate for cellars
+  // recherche cave
   liveSearch({
     inputSelector:     '#cellar-search',
     endpoint:          '/api/cellars',

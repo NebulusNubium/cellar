@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello WineController!{% endblock %}
+
+{% block body %}
+<main id="edit">
+
+    <h1>Edition Mode</h1>
+    
+
+
+    <section id="liste">
+        <div class="cards">
+        {{ form_start(wineForm, {'attr': {'class': 'picture-form'}}) }}
+
+            <div class="form-group">
+                {{ form_label(wineForm.name) }}
+                {{ form_widget(wineForm.name, {'attr': {'class': 'input'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(wineForm.description) }}
+                {{ form_widget(wineForm.description, {'attr': {'class': 'input'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(wineForm.countries) }}
+                {{ form_widget(wineForm.countries, {'attr': {'class': 'input'}}) }}
+            </div>
+                <div class="form-group">
+                {{ form_label(wineForm.regions) }}
+                {{ form_widget(wineForm.regions, {'attr': {'class': 'input'}}) }}
+            </div>
+                <div class="form-group">
+                {{ form_label(wineForm.grapes) }}
+                {{ form_widget(wineForm.grapes, {'attr': {'class': 'input'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(wineForm.year) }}
+                {{ form_widget(wineForm.year, {'attr': {'class': 'input'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(wineForm.imageFile) }}
+                {{ form_widget(wineForm.imageFile, {'attr': {'class': 'file-input'}}) }}
+            </div>
+            <button class="submit-button">Save</button>
+        {{ form_end(wineForm) }}
+        </div>
+    </section>
+    <a href="{{path('wine')}}" class="btn">Back to the Wines</a>
+</main>
+{% endblock %}

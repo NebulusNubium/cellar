@@ -127,5 +127,4 @@ final class MyCaveController extends AbstractController
             'wines'    => $wines,
         ]);
     }
-
 }

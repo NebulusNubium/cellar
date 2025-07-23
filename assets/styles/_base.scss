@@ -1,4 +1,5 @@
 @use 'variables' as v;
+@use "mixins" as m;
 body {
     font-family: "Roboto Slab", sans-serif;
     margin: 0;
@@ -123,40 +124,12 @@ a{
     }
 }
 .filter-form{
-    width: 40%;
-    height: auto;
-    margin: auto;
-    background-color: v.$primary-color;
-    border-radius: 10px;
-    
-    .wine-filter{
-       text-align: center;
-       margin: 1rem;
-       input{
-        margin: 1rem;
-        height: 2rem;
-        width: 300px;
-        border-radius: 20px;
-       }
-       select{
-        margin: 1rem;
-        height: 2rem;
-        width: 300px;
-        border-radius: 20px;
-       }
-       button{
-        margin: 1rem;
-        height: 2rem;
-        width: 300px;
-        cursor: pointer;
-        background-color: v.$grey;
-        border-radius: 20px;
-        border: none;
-       }
-       button:hover{
-        background-color: v.$colorSecondary;
-       }
-      
+    @include m.form; 
+}
+#wines{
+    @include m.form; 
+    .filter-form{
+        width: 30%;
     }
 }
 .btn{
@@ -175,4 +148,25 @@ a{
     &:hover {
         background-color: black;
     }
+}
+.minus,.plus{
+    color: white;
+    border-radius: 50%;
+    font-size: 2rem;
+    background-color: v.$colorSecondary;
+    padding: 0rem 0.4rem;
+    &:hover {
+        background-color: black;
+    }
+}
+.plus{
+    padding: 0rem 0.5rem;
+}
+.minus{
+    padding: 0rem 0.8rem;
+}
+.actions{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

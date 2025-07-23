@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -33,6 +35,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Cellars $cellar = null;
+
+    /**
+     * @var Collection<int, Bottles>
+     */
+    #[ORM\ManyToMany(targetEntity: Bottles::class, inversedBy: 'users')]
+    private Collection $bottle;
+
+    public function __construct()
+    {
+        $this->bottle = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -117,6 +130,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->cellar = $cellar;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Bottles>
+     */
+    public function getBottle(): Collection
+    {
+        return $this->bottle;
+    }
+
+    public function addBottle(Bottles $bottle): static
+    {
+        if (!$this->bottle->contains($bottle)) {
+            $this->bottle->add($bottle);
+        }
+
+        return $this;
+    }
+
+    public function removeBottle(Bottles $bottle): static
+    {
+        $this->bottle->removeElement($bottle);
 
         return $this;
     }

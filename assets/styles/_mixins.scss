@@ -1,16 +1,45 @@
 @use 'variables' as v;
 
-/// "bouton" link effect using your design tokens
-/// @param $bg            Background color (light sand)
-/// @param $text-color    Link text color
-/// @param $hover-text    Link text color on hover
-/// @param $font-family   Font family
-/// @param $font-size     Font size
-/// @param $padding       Padding
-/// @param $radius        Border-radius
-/// @param $grad-start    Gradient start (transparent)
-/// @param $grad-mid      Gradient mid (semi‐opaque sand)
-/// @param $grad-end      Gradient end (solid sand)
+
+@mixin form(){
+  .filter-form{
+    width: 40%;
+    height: auto;
+    margin: auto;
+    background-color: v.$primary-color;
+    border-radius: 10px;
+    
+    .wine-filter{
+       text-align: center;
+       margin: 1rem;
+       input{
+        margin: 1rem;
+        height: 2rem;
+        width: 300px;
+        border-radius: 20px;
+       }
+       select{
+        margin: 1rem;
+        height: 2rem;
+        width: 300px;
+        border-radius: 20px;
+       }
+       button{
+        margin: 1rem;
+        height: 2rem;
+        width: 300px;
+        cursor: pointer;
+        background-color: v.$grey;
+        border-radius: 20px;
+        border: none;
+       }
+       button:hover{
+        background-color: v.$colorSecondary;
+       }
+      
+    }
+}
+}
 @mixin bouton(
   $bg:            v.$colorSecondary,
   $text-color:    v.$black,
