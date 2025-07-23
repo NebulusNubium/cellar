@@ -54,4 +54,25 @@ class BottlesRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
+    public function findByTerm(string $term): array
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->leftJoin('b.regions',  'r')
+            ->leftJoin('b.countries', 'c')
+            ->where('LOWER(b.name)    LIKE :q')
+            ->orWhere('LOWER(b.grapes) LIKE :q')
+            ->orWhere('LOWER(r.name)  LIKE :q')
+            ->orWhere('LOWER(c.name)  LIKE :q')
+            ->setParameter('q', '%'.strtolower($term).'%')
+            ->orderBy('b.name','ASC');
+            if (ctype_digit($term)) {
+        $qb->orWhere('b.year = :year')
+           ->setParameter('year', (int) $term);
+    };
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

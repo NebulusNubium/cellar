@@ -6,15 +6,21 @@
 <main id="wines">
     <h1>All of our Bottles</h1>
             <div class="filter-form">
-            {{ form_start(form) }}
-                    {{ form_row(form.name) }}
+            {# {{ form_start(form) }}
+                    {{ form_row(form.Name) }}
                     {{ form_row(form.year) }}
-                    {{ form_row(form.region) }}
-                    {{ form_row(form.country) }}
+                    {{ form_row(form.regions) }}
+                    {{ form_row(form.countries) }}
                     {{ form_row(form.grape) }}
                 <button class="btn btn-primary" type="submit">Filtrer</button>
-            {{ form_end(form) }}
+            {{ form_end(form) }} #}
+            <div class="wine-filter">
+                <label for="wine-search">Search wines:</label>
+                <input type="text" id="wine-search" placeholder="Type a specific grape, name, region, etc...">
+                <ul id="search-results" class="search-results"></ul>
+            </div>
         </div>
+
     <section id="liste">
         <div class="cards">
         {% for wine in wines %}
@@ -38,17 +44,6 @@
                     <button onclick="toggleDescription({{ wine.id }})">Reduce</button>
                 </p>
                 <div class="actions">
-                {# {# {% if is_granted("ROLE_USER", "ROLE_ADMIN") %}
-                    <a class="add" href="{{ path('addWine', {'id': wine.id}) }}">Add to cellar</a> 
-                {% endif %}
-                {% if is_granted('ROLE_ADMIN') or (app.user and app.user.id == wine.user.id) %}
-                    <a class="modifier" href="{{ path('app_wine_change', {'id': wine.id}) }}">Modifier</a> 
-                    <form method="POST" onsubmit="return confirm('Confirmer la suppression?')" action="{{ path('delete_wine', {'id': wine.id}) }}">
-                        <input type="hidden" name="_method" value="delete">
-                        <input type="hidden" name="_token" value="{{ csrf_token('SUP' ~ wine.id) }}">
-                        <button class="supprimer">Supprimer</button>
-                    </form>
-                {% endif %} #}
                 </div>         
             </div>
             

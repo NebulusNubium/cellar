@@ -9,15 +9,18 @@
     {% if cellars is empty %}
         <p>No cellar found.</p>
     {% else %}
-        <div class="cave-list">
-            {% for cellar in cellars %}
-                <article class="user-cave">
-                    <h2> {{ cellar.user.username }}'s Cellar</h2>
+        <section id="liste">
+        <div class="cards">
+        {% for cellar in cellars %}
+            <div class="card">   
+                <h2> {{ cellar.user.username }}'s Cellar</h2>
                     <p> {{ cellar.Wines|length  }} different bottles in this collection.</p>
-                    <a href="{{ path('cellar', { 'cellar': cellar.id }) }}" class="btn">Visit this Cellar</a>
-                </article>
-            {% endfor %}
+                    <a href="{{ path('cellar', { 'cellar': cellar.id }) }}" class="btn">Visit this Cellar</a>  
+            </div>
+            
+        {% endfor %}
         </div>
+    </section>
     {% endif %}
 </main>
 

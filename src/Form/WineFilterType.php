@@ -23,34 +23,35 @@ class WineFilterType extends AbstractType
         $this->entityManager = $entityManager;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function filterWines(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', TextType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => 'Label of the Wine',
                 'attr' => ['placeholder' => 'Type the label of the wine']
             ])
             ->add('year', IntegerType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => 'Vintage',
                 'attr' => ['placeholder' => 'Type a year']
             ])
-            ->add('region', EntityType::class, [
+            ->add('regions', EntityType::class, [
                 'class' => Regions::class,
                 'choice_label' => 'name',
-                'required' => true,
+                'required' => false,
                 'placeholder' => 'Type its region',
                 'label' => 'Regions'
             ])
-            ->add('country', EntityType::class, [
+            ->add('countries', EntityType::class, [
                 'class' => Countries::class,
                 'choice_label' => 'name',
-                'required' => true,
+                'required' => false,
                 'placeholder' => 'Type its country',
                 'label' => 'country'
             ])
-            ->add('grape')
+            ->add('grape', TextType::class, [
+                'required' => false])
 
             ;
     }
