@@ -5,7 +5,13 @@
 {% block body %}
 <main id="user-caves">
     <h1>All of our Wine Cellars</h1>
-
+        <div class="filter-form">
+            <div class="wine-filter">
+                <label for="wine-search">Search a cellar:</label>
+                <input type="text" id="cellar-search" placeholder="Search cellars..." autocomplete="off" >
+                <ul id="search-results" class="search-results"></ul>
+            </div>
+        </div>
     {% if cellars is empty %}
         <p>No cellar found.</p>
     {% else %}

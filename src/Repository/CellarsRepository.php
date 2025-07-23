@@ -16,6 +16,18 @@ class CellarsRepository extends ServiceEntityRepository
         parent::__construct($registry, Cellars::class);
     }
 
+    public function findByNameLike(string $term): array
+{
+    $qb = $this->createQueryBuilder('c')
+        ->join('c.user','u')
+        ->where('LOWER(u.username) LIKE :q')
+        ->orWhere('LOWER(c.name) LIKE :q')
+        ->setParameter('q','%'.strtolower($term).'%')
+        ->orderBy('u.username','ASC')
+    ;
+    return $qb->getQuery()->getResult();
+}
+
     //    /**
     //     * @return Cellars[] Returns an array of Cellars objects
     //     */
