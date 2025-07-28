@@ -5,6 +5,8 @@ namespace App\Form;
 use App\Entity\Bottles;
 use App\Entity\Regions;
 use App\Entity\Countries;
+use App\Repository\RegionsRepository;
+use App\Repository\CountriesRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -25,13 +27,21 @@ class WineType extends AbstractType
                 'class'        => Regions::class,
                 'choice_label' => 'name',
                 'required' => true,
-                'label' => 'Region'
+                'label' => 'Region',
+                'query_builder' => function(RegionsRepository $repo) {
+            return $repo->createQueryBuilder('r')
+                        ->orderBy('r.name', 'ASC');
+        },
             ])
             ->add('countries', EntityType::class, [
                 'class'        => Countries::class,
                 'choice_label' => 'name',
                 'required' => true,
-                'label' => 'Country'
+                'label' => 'Country',
+                'query_builder' => function(CountriesRepository $repo) {
+            return $repo->createQueryBuilder('c')
+                        ->orderBy('c.name', 'ASC');
+        },
             ])
             ->add('imageFile', FileType::class, [
                 'required' => false,

@@ -14,6 +14,7 @@ class registrationForm extends AbstractType
     {
         $builder
             ->add('username')
+            ->add('pseudo')
             ->add('password')
             ->add('cellarName', TextType::class, [
                 'mapped'   => false,

@@ -3,13 +3,10 @@
 
 //My Cellar
 #myCellar{
-    #emptyCellar{
-        margin: 0;
-        text-align: center;
-        color: white;
-        padding-top: 20%;
-        font-size: 4rem;
-    }
+    #liste{
+    .add-title{
+    padding-top: 2rem;
+}}
 }
 #liste {
     display: flex;
@@ -33,6 +30,7 @@
             color: black;
         }
         .add{background-color: v.$grey; border-radius: 10px;}
+        .btn{width: 80%;}
     }
 }
 .btn{
@@ -40,4 +38,7 @@
     text-align: center;
     margin: auto;
     background-color: v.$grey;
+}
+.stock-count{
+    display: inline-block;
 }

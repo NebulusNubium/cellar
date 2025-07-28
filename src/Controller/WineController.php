@@ -4,6 +4,7 @@ namespace App\Controller;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Form\WineType;
 use App\Entity\Bottles;
+use App\Entity\Cellars;
 use App\Form\WineFilterType;
 use App\Repository\BottlesRepository;
 use App\Repository\CellarsRepository;
@@ -39,7 +40,7 @@ final class WineController extends AbstractController
     }
 
     #[Route('/api/wines', name:'api_wines', methods:['GET'])]
-public function search(BottlesRepository $repo, Request $req): JsonResponse
+    public function search(BottlesRepository $repo, Request $req): JsonResponse
     {
     $term  = $req->query->get('search','');
     $wines = $repo->findByTerm($term);
@@ -77,4 +78,26 @@ public function search(BottlesRepository $repo, Request $req): JsonResponse
             'wines'=>$wines,
         ]);
     }
+
+     #[Route('/wine/{id}/add/', name: 'add', methods: ['GET', 'POST'])]
+    public function add(Bottles $wine, Request $request, EntityManagerInterface $entityManager, CellarsRepository $CR): Response
+    {
+        if ($this->getUser() == null) {
+            throw $this->createAccessDeniedException('You have to log in to view this page.');
+        };
+        $user = $this->getUser();
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('add-wine'.$wine->getId(), $token)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token');
+        }
+        $cellar = $CR->findOneBy(['user' => $user]);
+
+        $cellar->addWine($wine)
+            ->setPublishedAt(new \DateTimeImmutable());
+        $entityManager->persist($cellar);
+        $entityManager->flush();
+        return $this->redirectToRoute('wine'); 
+        $this->addFlash('success','Wine added!');
+    }
+
 }

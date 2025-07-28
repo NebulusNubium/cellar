@@ -36,19 +36,18 @@
                     {{ wine.description }}
                     <button onclick="toggleDescription({{ wine.id }})">Reduce</button>
                 </p>
+                {% set inv = cellar.stock
+        |filter(inv => inv.wine.id == wine.id)
+        |first
+    %}
+                    {% set stock = inv ? inv.quantity : 0 %}
                 <div class="actions">
-                {# {# {% if is_granted("ROLE_USER", "ROLE_ADMIN") %}
-                    <a class="add" href="{{ path('addWine', {'id': wine.id}) }}">Add to cellar</a> 
-                {% endif %}
-                {% if is_granted('ROLE_ADMIN') or (app.user and app.user.id == wine.user.id) %}
-                    <a class="modifier" href="{{ path('app_wine_change', {'id': wine.id}) }}">Modifier</a> 
-                    <form method="POST" onsubmit="return confirm('Confirmer la suppression?')" action="{{ path('delete_wine', {'id': wine.id}) }}">
-                        <input type="hidden" name="_method" value="delete">
-                        <input type="hidden" name="_token" value="{{ csrf_token('SUP' ~ wine.id) }}">
-                        <button class="supprimer">Supprimer</button>
-                    </form>
-                {% endif %} #}
-                </div>         
+                    <p class="stock-controls">
+                        {# <button type="button" data-delta="-1" class="btn minus">−</button> #}
+                        <span class="stock-count">{{ stock }} available</span>
+                        {# <button type="button" data-delta="+1" class="btn plus">+</button> #}
+                    </p>
+                </div>     
             </div>
             
         {% endfor %}

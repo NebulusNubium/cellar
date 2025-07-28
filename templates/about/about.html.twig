@@ -3,6 +3,8 @@
 {% block title %}Hello AboutController!{% endblock %}
 
 {% block body %}
+<main id="contact">
+
  <h1>Contactez-nous</h1>
 
   {{ form_start(contactForm, {'attr': {'class': 'registration-form'}}) }}
@@ -23,4 +25,5 @@
     </div>
     <button type="submit" class="submit">Envoyer</button>
   {{ form_end(contactForm) }}
+</main>
 {% endblock %}

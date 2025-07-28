@@ -32,9 +32,16 @@ class Cellars
     #[ORM\JoinTable(name: 'cellar_bottles')]
     private Collection $wines;
 
+    /**
+     * @var Collection<int, Inventory>
+     */
+    #[ORM\OneToMany(targetEntity: Inventory::class, mappedBy: 'cellar')]
+    private Collection $stock;
+
     public function __construct()
     {
         $this->wines = new ArrayCollection();
+        $this->stock = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -100,4 +107,35 @@ class Cellars
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Inventory>
+     */
+    public function getStock(): Collection
+    {
+        return $this->stock;
+    }
+
+    public function addStock(Inventory $stock): static
+    {
+        if (!$this->stock->contains($stock)) {
+            $this->stock->add($stock);
+            $stock->setCellar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Inventory $stock): static
+    {
+        if ($this->stock->removeElement($stock)) {
+            // set the owning side to null (unless already changed)
+            if ($stock->getCellar() === $this) {
+                $stock->setCellar(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

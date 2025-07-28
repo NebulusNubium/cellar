@@ -77,4 +77,30 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `
   });
+
+//stock:
+document.querySelectorAll('.stock-controls').forEach(ctrl=>{
+  const card      = ctrl.closest('.card');
+  const wineId    = card.dataset.id;
+  const countSpan = ctrl.querySelector('.stock-count');
+
+  ctrl.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const delta = parseInt(btn.dataset.delta,10);
+      const resp  = await fetch(`/stock/${wineId}`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ delta })
+      });
+      const data = await resp.json();
+      if(data.success){
+        countSpan.textContent = data.newStock;
+      }
+    });
+  });
 });
+
+});
+
+  
+

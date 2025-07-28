@@ -42,6 +42,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Bottles::class, inversedBy: 'users')]
     private Collection $bottle;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $pseudo = null;
+
     public function __construct()
     {
         $this->bottle = new ArrayCollection();
@@ -154,6 +157,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeBottle(Bottles $bottle): static
     {
         $this->bottle->removeElement($bottle);
+
+        return $this;
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(?string $pseudo): static
+    {
+        $this->pseudo = $pseudo;
 
         return $this;
     }

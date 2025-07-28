@@ -4,98 +4,97 @@
 
 {% block body %}
 <main id="myCellar">
-    {# <h1>Cellars de {{ Cellars.User.Username }}</h1> #}
     <a href="{{ path('allCellars') }}" class="btn">Visit other cellars</a>
-    
+
     {% if wines is empty %}
         <h2>Welcome to your cellar</h2>
-        <h1>{{cellar.Name}}</h1>
+        <h1>{{ cellar.Name }}</h1>
         <p>You do not have bottles in your cellar.</p>
-        {# ADDING A BOTTLE #}
-        <h1 class="add-title">Adding a bottle to your cave:</h1>
-        {{ form_start(wineForm, {'attr': {'class': 'picture-form'}}) }}
-
-            <div class="form-group">
-                {{ form_label(wineForm.name) }}
-                {{ form_widget(wineForm.name, {'attr': {'class': 'input'}}) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_label(wineForm.description) }}
-                {{ form_widget(wineForm.description, {'attr': {'class': 'input'}}) }}
-            </div>
-            <div class="form-group">
-                {{ form_label(wineForm.countries) }}
-                {{ form_widget(wineForm.countries, {'attr': {'class': 'input'}}) }}
-            </div>
-                <div class="form-group">
-                {{ form_label(wineForm.regions) }}
-                {{ form_widget(wineForm.regions, {'attr': {'class': 'input'}}) }}
-            </div>
-                <div class="form-group">
-                {{ form_label(wineForm.grapes) }}
-                {{ form_widget(wineForm.grapes, {'attr': {'class': 'input'}}) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_label(wineForm.imageFile) }}
-                {{ form_widget(wineForm.imageFile, {'attr': {'class': 'file-input'}}) }}
-            </div>
-            
-
-            <button class="submit-button">Add the bottle</button>
-
-        {{ form_end(wineForm) }}
-        
     {% else %}
-    <div class="bouteille-list">
-        {% for wine in cellar.wines %}
-            <article class="bottle">
-                <img src="{{ asset('uploads/images/' ~ wine.imageName) }}" alt="Image de {{ wine.name }}">
-                <p>{{ wine.name }}</p>
-                <p>Year : {{ wine.year }}</p>
-                <p>Grapes : {{ wine.grapes }}</p>
-                <p>Region and Country : {{ wine.regions.name }}, {{ wine.countries.name }}</p>
-                <p>Description: {{wine.description}}</p>
-            </article>
-        {% endfor %}
+        <h2>Welcome to your cellar</h2>
+        <h1>{{ cellar.Name }}</h1>
 
-        <h1 class="add-title">Adding a bottle to your cave:</h1>
-        {{ form_start(wineForm, {'attr': {'class': 'picture-form'}}) }}
+        <section id="liste">
+            <div class="cards">
+                {% for wine in cellar.wines %}
+                    <div class="card" data-id="{{ wine.id }}">
+                        <h2 class="view-name">{{ wine.name }}</h2>
+                        <p class="view-year">{{ wine.year }}</p>
+                        <p class="view-grapes">{{ wine.grapes }}</p>
+                        <p class="view-region">{{ wine.regions.name }}</p>
+                        <p class="view-country">{{ wine.countries.name }}</p>
+                        <div>{{wine.imageFile}}</div>
 
-            <div class="form-group">
-                {{ form_label(wineForm.name) }}
-                {{ form_widget(wineForm.name, {'attr': {'class': 'input'}}) }}
-            </div>
+                        {# <!-- Short description --> #}
+                        {#
+                        <p id="bouteille-description-{{ wine.id }}">
+                            {{ wine.description|slice(0, 100) }}...
+                            <button onclick="toggleDescription({{ wine.id }})">Expand</button>
+                        </p>
+                        #}
 
-            <div class="form-group">
-                {{ form_label(wineForm.description) }}
-                {{ form_widget(wineForm.description, {'attr': {'class': 'input'}}) }}
+                        <!-- Full description -->
+                        <p
+                            class="view-description"
+                            id="bouteille-description-full-{{ wine.id }}"
+                            style="display: none;"
+                        >
+                            {{ wine.description }}
+                            {# <button onclick="toggleDescription({{ wine.id }})">Reduce</button> #}
+                        </p>
+                         {% set inv = cellar.stock
+        |filter(inv => inv.wine.id == wine.id)
+        |first
+    %}
+                         {% set stock = inv ? inv.quantity : 0 %}
+                        <div class="actions">
+                            <p class="stock-controls">
+                                <button type="button" data-delta="-1" class="btn minus">−</button>
+                                <span class="stock-count">{{ stock }} </span> available
+                                <button type="button" data-delta="+1" class="btn plus">+</button>
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-            <div class="form-group">
-                {{ form_label(wineForm.countries) }}
-                {{ form_widget(wineForm.countries, {'attr': {'class': 'input'}}) }}
-            </div>
-                <div class="form-group">
-                {{ form_label(wineForm.regions) }}
-                {{ form_widget(wineForm.regions, {'attr': {'class': 'input'}}) }}
-            </div>
-                <div class="form-group">
-                {{ form_label(wineForm.grapes) }}
-                {{ form_widget(wineForm.grapes, {'attr': {'class': 'input'}}) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_label(wineForm.imageFile) }}
-                {{ form_widget(wineForm.imageFile, {'attr': {'class': 'file-input'}}) }}
-            </div>
-            
-
-            <button class="submit-button">Add the bottle</button>
-
-        {{ form_end(wineForm) }}
-    </div>
+        </section>
     {% endif %}
-    
+
+    <h1 class="add-title">Create a bottle for your cellar:</h1>
+
+    {{ form_start(wineForm, { attr: { class: 'picture-form' } }) }}
+        <div class="form-group">
+            {{ form_label(wineForm.name) }}
+            {{ form_widget(wineForm.name, { attr: { class: 'input' } }) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(wineForm.description) }}
+            {{ form_widget(wineForm.description, { attr: { class: 'input' } }) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(wineForm.countries) }}
+            {{ form_widget(wineForm.countries, { attr: { class: 'input' } }) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(wineForm.regions) }}
+            {{ form_widget(wineForm.regions, { attr: { class: 'input' } }) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(wineForm.grapes) }}
+            {{ form_widget(wineForm.grapes, { attr: { class: 'input' } }) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(wineForm.imageFile) }}
+            {{ form_widget(wineForm.imageFile, { attr: { class: 'file-input' } }) }}
+        </div>
+
+        <button class="submit-button">Add the bottle</button>
+    {{ form_end(wineForm) }}
 </main>
 {% endblock %}
+

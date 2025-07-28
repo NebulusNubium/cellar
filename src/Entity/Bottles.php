@@ -69,6 +69,11 @@ class Bottles
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'bottle')]
     private Collection $users;
 
+    /**
+     * @var Collection<int, Inventory>
+     */
+    #[ORM\OneToMany(targetEntity: Inventory::class, mappedBy: 'wine')]
+    private Collection $stock;
 /**
  * @param File|null $imageFile
  */
@@ -87,6 +92,7 @@ public function getImageFile(): ?File
     {
         $this->cellar = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->stock = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -247,4 +253,35 @@ public function getImageFile(): ?File
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Inventory>
+     */
+    public function getStock(): Collection
+    {
+        return $this->stock;
+    }
+
+    public function addStock(Inventory $stock): static
+    {
+        if (!$this->stock->contains($stock)) {
+            $this->stock->add($stock);
+            $stock->setWine($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Inventory $stock): static
+    {
+        if ($this->stock->removeElement($stock)) {
+            // set the owning side to null (unless already changed)
+            if ($stock->getWine() === $this) {
+                $stock->setWine(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

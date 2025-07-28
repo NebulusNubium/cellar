@@ -40,6 +40,12 @@
                     <p><a href="" class="plus">+</a> Number  <a href="" class="minus">-</a> </p>
                     <a href="{{ path('edit', { id: wine.id }) }}" class="btn modifier">Edit</a>
                 {% endif %} 
+                {# if (not in myCave) #}
+                    <form action="{{ path('add', { id: wine.id }) }}" method="POST" style="display:inline">
+                        <input type="hidden" name="_token" value="{{csrf_token('add-wine' ~ wine.id) }}"
+                        >
+                        <button type="submit" class="btn">Add to cellar</button>
+                    </form>
                 </div>         
             </div>
             

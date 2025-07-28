@@ -1,12 +1,14 @@
 @use 'variables' as v;
 
 nav{
-    background-color: v.$grey;
+    background-image: 
+    url('../../public/images/bgNav2.png');
+  background-repeat: repeat;
+
     display: flex;
     justify-content: center;
     align-content: center;
     gap: 10%;
-    
     .nav-list {
         display: flex;
         gap: 20px;
@@ -15,10 +17,6 @@ nav{
 
         }
         li{
-            background-image: url('../../public/images/bgBtn.png');
-            background-position: center;
-            background-size: cover;
-            padding: 1rem;
         }
     }
 
@@ -61,7 +59,7 @@ nav{
     p{margin: 0; text-align: center;}
 }
 footer{
-    background-color: v.$grey;
+    background: url('../../public/images/bgNav.png');
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -93,5 +91,13 @@ footer{
     h1{
         font-size: 4rem;
         color: v.$grey;
+    }
+}
+
+#contact{
+    background-image: url(../../public/images/bgContact.png);
+    h1{
+        text-shadow: 3px 3px 3px v.$colorPrimary;
+        color: white;
     }
 }
