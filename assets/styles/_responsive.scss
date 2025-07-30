@@ -1,4 +1,10 @@
 @media (max-width: 1497px) {
+main .home-container p{
+        width: 90%;
+    }
+main .home-container .latest{
+    gap: 1rem;
+}
   /* Masquer le menu sur mobile */
   .nav-list {
     display: none !important;

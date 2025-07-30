@@ -58,7 +58,8 @@
         </section>
     {% endif %}
 
-    <h1 class="add-title">Create a bottle for your cellar:</h1>
+    <h1 class="add-title">Create a bottle:</h1>
+    <p>You will then have to add it to your cellar from the All Wine section!</p>
 
     {{ form_start(wineForm, { attr: { class: 'picture-form' } }) }}
         <div class="form-group">
@@ -94,6 +95,7 @@
             {{ form_label(wineForm.imageFile) }}
             {{ form_widget(wineForm.imageFile, { attr: { class: 'file-input' } }) }}
         </div>
+        <p>Warning: you will then have to add it from the Wine Collection</p>
 
         <button class="submit-button">Add the bottle</button>
     {{ form_end(wineForm) }}
