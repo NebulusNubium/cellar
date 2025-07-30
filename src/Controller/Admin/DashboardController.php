@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Bottles;
+use App\Entity\Cellars;
 use App\Entity\Countries;
 use App\Entity\Inventory;
 use App\Entity\Regions;
@@ -35,6 +36,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Wines', 'fa fa-wine-bottle', Bottles::class);
         yield MenuItem::linkToCrud('Countries', 'fa fa-wine-bottle', Countries::class);
         yield MenuItem::linkToCrud('Regions', 'fa fa-wine-bottle', Regions::class);
+        yield MenuItem::linkToCrud('Cellars', 'fa fa-wine-bottle', Cellars::class);
         yield MenuItem::linkToRoute('Back to website', 'fa fa-arrow-left', 'home');
     }
 }
