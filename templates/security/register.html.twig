@@ -1,7 +1,7 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription{% endblock %}
+{% block title %}Registration{% endblock %}
 
 {% block body %}
 <main id="register">
@@ -20,6 +20,11 @@
       {{ form_label(registrationForm.cellarName) }}
         {{ form_widget(registrationForm.cellarName, {'attr': {'class': 'input'}}) }}
     </div>
+        <div class="form-group">
+      {{ form_label(registrationForm.pseudo) }}
+        {{ form_widget(registrationForm.pseudo, {'attr': {'class': 'input'}}) }}
+    </div>
+
     <button class="submit">Register</button>
   {{ form_end(registrationForm) }}
 

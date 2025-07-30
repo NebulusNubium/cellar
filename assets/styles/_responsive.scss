@@ -15,6 +15,9 @@
 nav .nav-list li a{
     padding: 0;
 }
+    .latest>.btn{
+        width: 50%;
+    }
   /* Afficher le menu burger */
   #menu-toggle {
     display: flex !important;
@@ -54,4 +57,17 @@ nav .nav-list li a{
     #user-caves .filter-form .wine-filter input{
         width: 100%;
     }
+    main .home-container p{
+        width: 90%;
+    }
+    main{
+    min-height: 100%;
+}
+.sf-toolbar-clearer{
+    display: none;
+}
+footer{
+    flex-direction: column;
+    align-items: center;
+}
 }

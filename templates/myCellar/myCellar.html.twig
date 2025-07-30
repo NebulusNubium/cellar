@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MyCellarsController!{% endblock %}
+{% block title %}Your Cellar!{% endblock %}
 
 {% block body %}
 <main id="myCellar">
@@ -84,6 +84,10 @@
         <div class="form-group">
             {{ form_label(wineForm.grapes) }}
             {{ form_widget(wineForm.grapes, { attr: { class: 'input' } }) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(wineForm.year) }}
+            {{ form_widget(wineForm.year, { attr: { class: 'input' } }) }}
         </div>
 
         <div class="form-group">
