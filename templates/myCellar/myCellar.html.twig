@@ -4,8 +4,6 @@
 
 {% block body %}
 <main id="myCellar">
-    <a href="{{ path('allCellars') }}" class="btn">Visit other cellars</a>
-
     {% if wines is empty %}
         <h2>Welcome to your cellar</h2>
         <h1>{{ cellar.Name }}</h1>

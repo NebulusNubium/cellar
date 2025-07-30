@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+
   //barre de recherche vin & cave
   function liveSearch({ inputSelector, endpoint, containerSelector, renderItem }) {
     const input   = document.querySelector(inputSelector);

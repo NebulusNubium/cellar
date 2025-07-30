@@ -7,7 +7,7 @@
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
-
+         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
@@ -16,10 +16,15 @@
     </head>
     <body>
         <nav>
-        <div class="logoTop">
-            <a href="{{path('home')}}"><img src="{{ asset('images/logo.png') }}" alt="logo site"></a>
-        </div>
+            <div class="logoTop">
+                <a href="{{path('home')}}"><img src="{{ asset('images/logo.png') }}" alt="logo site"></a>
+            </div>
 
+        <div class="menu-toggle" id="menu-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
         <ul class="nav-list" id="nav-list">
             {% if not is_granted('ROLE_USER') %}
                 <li><a href="{{ path('app_login') }}">Log In</a></li>
@@ -59,5 +64,18 @@
             <li><p>© 2025 My Cave. All rights applied.</p></li>
         </ul>
     </footer>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('menu-toggle');
+    const navList = document.getElementById('nav-list');
+
+    if (toggle && navList) {
+      toggle.addEventListener('click', function () {
+        navList.classList.toggle('active');
+      });
+    }
+  });
+</script>
+
     </body>
 </html>
