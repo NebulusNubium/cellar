@@ -3,17 +3,15 @@
 {% block title %}Hello CellarController!{% endblock %}
 
 {% block body %}
-<main id="myCellar">
-    {# <h1>Cellars de {{ Cellars.User.Username }}</h1> #}
-    <a href="{{ path('allCellars') }}" class="btn">Visit other cellars</a>
+<main id="cellar">
 
     {% if wines is empty %}
-  <h2>Welcome to {{ cellar.user.username }}’s cellar</h2>
-  <p>There are no bottles in this cellar!</p>
+  <h1>Welcome to {{ cellar.user.username }}’s cellar</h1>
+  <p id="empty">There are no bottles in this cellar!</p>
 
     {% else %}
-    <h2>Welcome to {{ cellar.user.username }}’s cellar</h2>
-    <h1>{{ cellar.name }}</h1>
+    <h1>Welcome to {{ cellar.user.username }}’s cellar</h1>
+    <h1 id="titleC">{{ cellar.name }}</h1>
     <section id="liste">
         <div class="cards">
         {% for wine in wines %}
@@ -25,16 +23,10 @@
                 <p>{{ wine.regions.name }}</p>
                 <p>{{ wine.countries.name }}</p>
                 
-                <!-- Description courte -->
-                <p id="bouteille-description-{{ wine.id }}">
-                    {{ wine.description|slice(0, 100) }}... 
-                    <button onclick="toggleDescription({{ wine.id }})">Expand</button>
-                </p>
 
                 <!-- Description complète -->
-                <p id="bouteille-description-full-{{ wine.id }}" style="display:none;">
+                <p>
                     {{ wine.description }}
-                    <button onclick="toggleDescription({{ wine.id }})">Reduce</button>
                 </p>
                 {% set inv = cellar.stock
         |filter(inv => inv.wine.id == wine.id)

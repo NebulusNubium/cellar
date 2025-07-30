@@ -2,17 +2,17 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Countries;
+use App\Entity\Bottles;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class CountriesCrudController extends AbstractCrudController
+class BottlesCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Countries::class;
+        return Bottles::class;
     }
 
     /*

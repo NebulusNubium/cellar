@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
           const items = await resp.json();
 
-          // re-render the grid
           container.innerHTML = items.map(renderItem).join('');
         } catch (err) {
           console.error('Live-search error:', err);
@@ -46,22 +45,42 @@ document.addEventListener('DOMContentLoaded', () => {
     endpoint:          '/api/wines',
     containerSelector: '#liste .cards',
     renderItem: w => `
-      <div class="card">
-        <h2>${w.name}</h2>
-        <p>${w.year}</p>
-        <p>${w.grapes}</p>
-        <p>${w.region}</p>
-        <p>${w.country}</p>
-        <p id="bouteille-description-${w.id}">
-          ${w.description.substring(0,100)}…
-          <button onclick="toggleDescription(${w.id})">Expand</button>
-        </p>
-        <p id="bouteille-description-full-${w.id}" style="display:none;">
-          ${w.description}
-          <button onclick="toggleDescription(${w.id})">Reduce</button>
-        </p>
+  <div class="card" data-id="${w.id}">
+    <h2 class="view-name">${w.name}</h2>
+    
+    <div class="image-content">
+      <div class="wineImage">
+        <img src="/uploads/images/${w.imageName}" alt="imageVin">
       </div>
-    `
+      <div class="content">
+        <p class="view-year">${w.year}</p>
+        <p class="view-grapes">${w.grapes}</p>
+        <p class="view-region">${w.regionName}</p>
+        <p class="view-country">${w.countryName}</p>
+      </div>
+    </div>
+
+    <p class="view-description" id="bouteille-description-full-${w.id}">
+      ${w.description}
+    </p>
+
+    <div class="actions">
+      <form action="/wine/${w.id}/add" method="POST" style="display:inline">
+        <input type="hidden" name="_token" value="${w.csrfAdd}">
+        <button type="submit" class="btn">Add to cellar</button>
+      </form>
+
+      ${w.isAdmin ? `
+        <a href="/wine/${w.id}/edit" class="btn modifier">Edit</a>
+        <form action="/wine/${w.id}/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this wine?');" style="display:inline">
+          <input type="hidden" name="_token" value="${w.csrfDelete}">
+          <button type="submit" class="btn supprimer">Delete</button>
+        </form>
+      ` : ''}
+    </div>
+  </div>
+`
+
   });
 
   // recherche cave

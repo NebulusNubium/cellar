@@ -46,60 +46,16 @@ final class MyCaveController extends AbstractController
         $bottle = new Bottles();
         $formBottle = $this->createForm(WineType::class, $bottle)
                     ->handleRequest($request);
-        if ($formBottle->isSubmitted() && $formBottle->isValid()) {
-        $name= $formBottle->get('name')->getData();
-        $year= $formBottle->get('year')->getData();
-        $regions= $formBottle->get('regions')->getData();
-        $countries = $formBottle->get('countries')->getData();
-        $description= $formBottle->get('description')->getData();
-        $imageFile= $formBottle->get('imageFile')->getData();
 
-        // Region existe? Sinon on la crée
-        // $regionRepo = $entityManager->getRepository(Regions::class);
-        // $region = $regionRepo->findOneBy(['name' => $regions])
-        //     ?? (new Regions())->setName($regions);
-
-        // Pareil pour le pays
-        // $countryRepo = $entityManager->getRepository(Countries::class);
-        // $country = $countryRepo->findOneBy(['name' => $countries])
-        //     ?? (new Countries())->setName($countries);
-
-        $entityManager->persist($regions);
-        $entityManager->persist($countries);
-        //pareil pour le vin:
-        $bottleRepo = $entityManager->getRepository(Bottles::class);
-        $bottle= $bottleRepo->findOneBy([
-        'name'      => $name,
-        'year'      => $year,
-        'countries' => $countries,
-    ]);
-        // données du vin
-        if (! $bottle) {
-        $bottle = new Bottles();
-        $bottle
-            ->setName($name)
-            ->setYear($year)
-            ->setGrapes($formBottle->get('grapes')->getData())
-            ->setRegions($regions)
-            ->setCountries($countries)
-            ->setDescription($description)
-            ->setPublishedAt(new \DateTimeImmutable())
-            ->setImageFile($imageFile)
-        ;
-        $entityManager->persist($bottle);
-        $bottle->addCellar($cellar);
-        $cellar->addWine($bottle)
-            ->setPublishedAt(new \DateTimeImmutable());
-        $entityManager->persist($cellar);
-        $entityManager->flush();
-        }else{
-            $this->addFlash('Error','Bottle already exists!');
+if ($formBottle->isSubmitted() && $formBottle->isValid()) {
+    $bottle->setPublishedAt(new \DateTimeImmutable());
+    $entityManager->persist($bottle);
+    $entityManager->flush();
+    $this->addFlash('success','Cellar saved!');
             return $this->redirectToRoute('myCellar');
-        }
+}
 
-            $this->addFlash('success','Cellar saved!');
-            return $this->redirectToRoute('myCellar');
-        }
+            
         return $this->render('myCellar/myCellar.html.twig', [
             'cellar' => $cellar,
             'wines'=>$wines,

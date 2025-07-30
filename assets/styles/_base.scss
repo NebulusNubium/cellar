@@ -12,22 +12,26 @@ ul {list-style-type: none;}
 a{
     color: white;
     text-decoration: none;
+    font-family: "Regular";
 }
+p{font-family: "Regular";}
 
-    h1,h2,h3{
+h1,h2,h3{
         text-align: center;
-        font-family: "Playfair Display SC", serif;
-        color: v.$primary-color;
+        font-family: "Bold";
+        color: v.$colorSecondary;
     }
-    h1{
+h1{
         font-size: 2.5rem;
         margin: 0rem;
         padding-top: 10%;
         text-shadow: 0px 3px 3px white;
     }
-    h2{
+h2{
         font-size: 1.5rem;
     }
+#empty{text-align: center;}
+#titleC{color: white; box-shadow: none;}
 // Formulaires 
 .registration-form,
 .login-form, .picture-form {
@@ -131,6 +135,18 @@ a{
     .filter-form{
         width: 30%;
     }
+    background-image: url(../../public/images/bgInscription.jpg);
+    background-position: center;
+    background-size: cover;
+}
+#user-caves{
+    background-image: url(../../public/images/cave.jpg);
+    background-position: center;
+    background-size: cover;
+    @include m.form; 
+    .filter-form{
+        width: 30%;
+    }
 }
 .btn{
     display: block;
@@ -168,5 +184,12 @@ a{
 .actions{
     display: flex;
     flex-direction: column;
-    align-items: center;
+}
+.cards .card .actions .supprimer:hover {
+    background-color: white;
+    color: #88002d;
+}
+.cards .card .actions .modifier:hover {
+    background-color: white;
+    color: #88002d;
 }

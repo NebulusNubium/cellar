@@ -1,21 +1,23 @@
 <?php
 
 namespace App\Controller;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Form\WineType;
 use App\Entity\Bottles;
 use App\Entity\Cellars;
 use App\Form\WineFilterType;
 use App\Repository\BottlesRepository;
 use App\Repository\CellarsRepository;
-use App\Repository\CountriesRepository;
 use App\Repository\RegionsRepository;
+use App\Repository\CountriesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class WineController extends AbstractController
 {
@@ -39,24 +41,34 @@ final class WineController extends AbstractController
         ]);
     }
 
-    #[Route('/api/wines', name:'api_wines', methods:['GET'])]
-    public function search(BottlesRepository $repo, Request $req): JsonResponse
-    {
+   #[Route('/api/wines', name:'api_wines', methods:['GET'])]
+public function search(
+    BottlesRepository $repo,
+    Request $req,
+    AuthorizationCheckerInterface $auth,
+    CsrfTokenManagerInterface $csrf
+): JsonResponse {
     $term  = $req->query->get('search','');
     $wines = $repo->findByTerm($term);
 
-    $data = array_map(fn($w) => [
-        'id'      => $w->getId(),
-        'name'    => $w->getName(),
-        'year'    => $w->getYear(),
-        'grapes'  => $w->getGrapes(),
-        'region'  => $w->getRegions()?->getName(),
-        'country' => $w->getCountries()?->getName(),
-        'description' => $w->getDescription(),
-    ], $wines);
+    $data = array_map(function ($w) use ($auth, $csrf) {
+        return [
+            'id'          => $w->getId(),
+            'name'        => $w->getName(),
+            'year'        => $w->getYear(),
+            'grapes'      => $w->getGrapes(),
+            'regionName'  => $w->getRegions()?->getName(),
+            'countryName' => $w->getCountries()?->getName(),
+            'description' => $w->getDescription(),
+            'imageName'   => $w->getImageName(),
+            'isAdmin'     => $auth->isGranted('ROLE_ADMIN'),
+            'csrfAdd'     => $csrf->getToken('add-wine' . $w->getId())->getValue(),
+            'csrfDelete'  => $csrf->getToken('delete' . $w->getId())->getValue(),
+        ];
+    }, $wines);
 
     return $this->json($data);
-    }
+}
 
 
     #[Route('/wine/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
@@ -78,6 +90,23 @@ final class WineController extends AbstractController
             'wines'=>$wines,
         ]);
     }
+
+    #[Route('/wine/{id}/delete', name: 'delete', methods: ['POST'])]
+#[IsGranted('ROLE_ADMIN')]
+public function delete(Request $request, Bottles $wine, EntityManagerInterface $entityManager): Response
+{
+    $submittedToken = $request->request->get('_token');
+
+    if ($this->isCsrfTokenValid('delete' . $wine->getId(), $submittedToken)) {
+        $entityManager->remove($wine);
+        $entityManager->flush();
+        $this->addFlash('success', 'Wine deleted successfully!');
+    } else {
+        $this->addFlash('error', 'Invalid CSRF token.');
+    }
+
+    return $this->redirectToRoute('wine');
+}
 
      #[Route('/wine/{id}/add/', name: 'add', methods: ['GET', 'POST'])]
     public function add(Bottles $wine, Request $request, EntityManagerInterface $entityManager, CellarsRepository $CR): Response

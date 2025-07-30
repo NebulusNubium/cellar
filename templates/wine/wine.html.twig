@@ -19,33 +19,36 @@
             <div class="card" data-id="{{ wine.id }}">
                 
                 <h2 class="view-name">{{ wine.name }}</h2>
-                <p class="view-year">{{ wine.year }}</p>
-                <p class="view-grapes">{{ wine.grapes }}</p>
-                <p class="view-region">{{ wine.regions.name }}</p>
-                <p class="view-country">{{ wine.countries.name }}</p>
+                <div class="image-content">
+                    <div class="wineImage">
+                        <img src="{{ asset('uploads/images/' ~ wine.imageName) }}" alt="imageVin">
+                    </div>
+                    <div class="content">
+                        <p class="view-year">{{ wine.year }}</p>
+                        <p class="view-grapes">{{ wine.grapes }}</p>
+                        <p class="view-region">{{ wine.regions.name }}</p>
+                        <p class="view-country">{{ wine.countries.name }}</p>
+                    </div>
+                </div>
                 
-                {# <!-- Description courte -->
-                <p id="bouteille-description-{{ wine.id }}">
-                    {{ wine.description|slice(0, 100) }}... 
-                    <button onclick="toggleDescription({{ wine.id }})">Expand</button>
-                </p> #}
-
-                <!-- Description complète -->
-                <p class="view-description" id="bouteille-description-full-{{ wine.id }}" style="display:none;">
+                
+                <p class="view-description" id="bouteille-description-full-{{ wine.id }}">
                     {{ wine.description }}
-                    <button onclick="toggleDescription({{ wine.id }})">Reduce</button>
                 </p>
                 <div class="actions">
-                {% if is_granted('ROLE_ADMIN') %}
-                    <p><a href="" class="plus">+</a> Number  <a href="" class="minus">-</a> </p>
-                    <a href="{{ path('edit', { id: wine.id }) }}" class="btn modifier">Edit</a>
-                {% endif %} 
                 {# if (not in myCave) #}
                     <form action="{{ path('add', { id: wine.id }) }}" method="POST" style="display:inline">
                         <input type="hidden" name="_token" value="{{csrf_token('add-wine' ~ wine.id) }}"
                         >
                         <button type="submit" class="btn">Add to cellar</button>
                     </form>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('edit', { id: wine.id }) }}" class="btn modifier">Edit</a>
+                    <form action="{{ path('delete', { id: wine.id }) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this wine?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ wine.id) }}">
+                        <button class="btn supprimer">Delete</button>
+                    </form>
+                {% endif %} 
                 </div>         
             </div>
             

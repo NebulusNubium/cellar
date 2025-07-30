@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AboutController!{% endblock %}
+{% block title %}Contact{% endblock %}
 
 {% block body %}
 <main id="contact">
 
- <h1>Contactez-nous</h1>
+ <h1>Contact Us</h1>
 
   {{ form_start(contactForm, {'attr': {'class': 'registration-form'}}) }}
     <div class="form-group">
@@ -19,11 +19,16 @@
       {{ form_errors(contactForm.email) }}
     </div>
     <div class="form-group">
+      {{ form_label(contactForm.object) }}
+      {{ form_widget(contactForm.object, {'attr': {'class': 'input'}}) }}
+      {{ form_errors(contactForm.object) }}
+    </div>
+    <div class="form-group">
       {{ form_label(contactForm.message) }}
       {{ form_widget(contactForm.message, {'attr': {'class': 'input', rows: 6}}) }}
       {{ form_errors(contactForm.message) }}
     </div>
-    <button type="submit" class="submit">Envoyer</button>
+    <button type="submit" class="submit">Send</button>
   {{ form_end(contactForm) }}
 </main>
 {% endblock %}

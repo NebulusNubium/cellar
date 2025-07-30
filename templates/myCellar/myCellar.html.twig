@@ -23,7 +23,7 @@
                         <p class="view-grapes">{{ wine.grapes }}</p>
                         <p class="view-region">{{ wine.regions.name }}</p>
                         <p class="view-country">{{ wine.countries.name }}</p>
-                        <div>{{wine.imageFile}}</div>
+                        <img src="{{ asset('uploads/images/' ~ wine.imageName) }}" alt="imageVin">
 
                         {# <!-- Short description --> #}
                         {#

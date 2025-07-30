@@ -11,23 +11,27 @@
 #liste {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
+    gap: 4rem;
     text-align: center;
+    margin-top: 8rem;
+    padding-bottom: 8rem;
 }
+
 .cards{
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 2rem;
+    gap: 4rem;
     padding: 2rem;
+    width: 70vw;
     .card {
         @include m.card;
         background-color: white;
-        height: 40
-        ;
         .modifier{
             color: black;
+            width: 30%;
         }
         .add{background-color: v.$grey; border-radius: 10px;}
         .btn{width: 80%;}
@@ -38,7 +42,14 @@
     text-align: center;
     margin: auto;
     background-color: v.$grey;
+        &:hover {
+        background-color: black;
+    }
 }
 .stock-count{
     display: inline-block;
+}
+
+main{
+    min-height: 100vh;
 }
