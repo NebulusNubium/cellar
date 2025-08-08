@@ -18,6 +18,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use App\Entity\Rating;
+use App\Repository\RatingRepository;
 
 final class WineController extends AbstractController
 {
@@ -108,7 +110,7 @@ public function delete(Request $request, Bottles $wine, EntityManagerInterface $
     return $this->redirectToRoute('wine');
 }
 
-     #[Route('/wine/{id}/add/', name: 'add', methods: ['GET', 'POST'])]
+    #[Route('/wine/{id}/add/', name: 'add', methods: ['GET', 'POST'])]
     public function add(Bottles $wine, Request $request, EntityManagerInterface $entityManager, CellarsRepository $CR): Response
     {
         if ($this->getUser() == null) {
@@ -125,8 +127,32 @@ public function delete(Request $request, Bottles $wine, EntityManagerInterface $
             ->setPublishedAt(new \DateTimeImmutable());
         $entityManager->persist($cellar);
         $entityManager->flush();
-        return $this->redirectToRoute('wine'); 
+        return $this->redirectToRoute('wine');
         $this->addFlash('success','Wine added!');
+    }
+
+    #[Route('/wine/{id}/rate', name: 'rate', methods: ['POST'])]
+    public function rate(Bottles $wine, Request $request, RatingRepository $ratingRepository, EntityManagerInterface $entityManager): Response
+    {
+        if (!$this->getUser()) {
+            throw $this->createAccessDeniedException('You must be logged in to rate a wine.');
+        }
+
+        $value = (int) $request->request->get('rating');
+        $user = $this->getUser();
+
+        $rating = $ratingRepository->findOneBy(['bottle' => $wine, 'user' => $user]);
+        if (!$rating) {
+            $rating = new Rating();
+            $rating->setBottle($wine);
+            $rating->setUser($user);
+        }
+        $rating->setValue($value);
+
+        $entityManager->persist($rating);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('wine');
     }
 
 }

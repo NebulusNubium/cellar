@@ -35,6 +35,19 @@
                 <p class="view-description" id="bouteille-description-full-{{ wine.id }}">
                     {{ wine.description }}
                 </p>
+                <p class="average-rating">
+                    Average rating: {{ wine.getAverageRating() is not null ? (wine.getAverageRating()|number_format(1)) : 'No rating yet' }}
+                </p>
+                {% if app.user %}
+                <form action="{{ path('rate', {id: wine.id}) }}" method="POST" class="rating-form">
+                    <select name="rating">
+                        {% for i in 1..5 %}
+                            <option value="{{ i }}" {% if wine.getUserRating(app.user) == i %}selected{% endif %}>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn">Rate</button>
+                </form>
+                {% endif %}
                 <div class="actions">
                 {# if (not in myCave) #}
                     <form action="{{ path('add', { id: wine.id }) }}" method="POST" style="display:inline">
