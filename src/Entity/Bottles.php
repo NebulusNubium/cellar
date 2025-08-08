@@ -10,6 +10,8 @@ use App\Repository\BottlesRepository;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
+use App\Entity\Rating;
+use App\Entity\User;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
@@ -74,6 +76,12 @@ class Bottles
      */
     #[ORM\OneToMany(targetEntity: Inventory::class, mappedBy: 'wine')]
     private Collection $stock;
+
+    /**
+     * @var Collection<int, Rating>
+     */
+    #[ORM\OneToMany(mappedBy: 'bottle', targetEntity: Rating::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $ratings;
 /**
  * @param File|null $imageFile
  */
@@ -93,6 +101,7 @@ public function getImageFile(): ?File
         $this->cellar = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->stock = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -282,6 +291,58 @@ public function getImageFile(): ?File
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setBottle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            if ($rating->getBottle() === $this) {
+                $rating->setBottle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAverageRating(): ?float
+    {
+        $count = $this->ratings->count();
+        if ($count === 0) {
+            return null;
+        }
+        $total = 0;
+        foreach ($this->ratings as $rating) {
+            $total += $rating->getValue();
+        }
+        return $total / $count;
+    }
+
+    public function getUserRating(User $user): ?int
+    {
+        foreach ($this->ratings as $rating) {
+            if ($rating->getUser() === $user) {
+                return $rating->getValue();
+            }
+        }
+        return null;
     }
 
 }
